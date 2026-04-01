@@ -102,8 +102,6 @@ width: 100%;
 height: 100%;
 object-fit: cover;
 display: block;
-transform: scale(0.5);
-transform-origin: center center;
 }
 
 #divider {
@@ -245,6 +243,16 @@ async function startVR() {
       audio: false
     });
 
+    // 広角レンズ (0.5x) — zoom制約対応ブラウザ向け
+    const videoTrack = stream.getVideoTracks()[0];
+    if (videoTrack) {
+      const caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+      if (caps.zoom) {
+        const targetZoom = Math.max(caps.zoom.min, Math.min(0.5, caps.zoom.max));
+        try { await videoTrack.applyConstraints({ advanced: [{ zoom: targetZoom }] }); } catch(e) {}
+      }
+    }
+
     const vL = document.getElementById('video-left');
     const vR = document.getElementById('video-right');
     vL.srcObject = stream;
@@ -273,8 +281,8 @@ async function startVR() {
 
 function adjustIPD(val) {
   const offset = parseInt(val);
-  document.getElementById('video-left').style.transform  = `translateX(${offset}px)`;
-  document.getElementById('video-right').style.transform = `translateX(${-offset}px)`;
+  document.getElementById('video-left').style.transform  = offset ? `translateX(${offset}px)` : '';
+  document.getElementById('video-right').style.transform = offset ? `translateX(${-offset}px)` : '';
 }
 
 function exitVR() {
