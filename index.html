@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finger Tracking Test</title>
+    <title>Finger Tracking Fix</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; color: white; font-family: sans-serif; }
-        canvas { width: 100vw; height: auto; display: block; }
-        #info { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; }
-        .axis { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(0, 255, 0, 0.5); }
+        body { margin: 0; background: #000; color: #0f0; font-family: monospace; overflow: hidden; }
+        #info { position: absolute; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.8); padding: 15px; border: 1px solid #0f0; }
+        canvas { width: 100vw; height: 100vh; object-fit: contain; }
+        #start-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; font-size: 20px; z-index: 20; cursor: pointer; }
     </style>
 </head>
 <body>
+    <button id="start-btn">カメラを起動して開始</button>
     <div id="info">
-        L (Offset): <span id="value">0</span> px<br>
-        <small>赤い線を画面中央に合わせてください</small>
+        Offset: <span id="value">0.00</span> px<br>
+        Status: <span id="status">Waiting...</span>
     </div>
-    <div class="axis"></div>
-    <video id="video" style="display:none" autoplay playsinline></video>
+    
+    <video id="video" autoplay playsinline muted style="display:none"></video>
     <canvas id="canvas"></canvas>
 
     <script>
@@ -25,15 +26,31 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const valueDisplay = document.getElementById('value');
+        const statusDisplay = document.getElementById('status');
+        const startBtn = document.getElementById('start-btn');
 
-        let baseY = null; // 基準となる中心座標
+        let baseY = null;
 
-        // カメラ起動
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false })
-            .then(stream => {
+        startBtn.onclick = () => {
+            startBtn.style.display = 'none';
+            initCamera();
+        };
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" }, 
+                    audio: false 
+                });
                 video.srcObject = stream;
+                // iOS対策: 明示的にplay()を呼ぶ
+                await video.play();
+                statusDisplay.innerText = "Running";
                 requestAnimationFrame(process);
-            });
+            } catch (err) {
+                statusDisplay.innerText = "Error: " + err.message;
+            }
+        }
 
         function process() {
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -47,37 +64,37 @@
                 let sumY = 0;
                 let count = 0;
 
-                // 全ピクセルをスキャンして「赤色」を探す
+                // スキャン範囲を中央付近に絞ると高速化＆精度向上します
                 for (let i = 0; i < data.length; i += 4) {
                     const r = data[i];
                     const g = data[i + 1];
                     const b = data[i + 2];
 
-                    // 赤色の判定条件（Rが大きく、GとBが小さい）
-                    if (r > 150 && g < 80 && b < 80) {
+                    // 赤色判定（環境に合わせて150の数値を調整してください）
+                    if (r > 130 && g < 100 && b < 100) {
                         const y = Math.floor((i / 4) / canvas.width);
                         sumY += y;
                         count++;
                     }
                 }
 
-                if (count > 0) {
+                if (count > 5) { // ノイズ回避のため5ピクセル以上で反応
                     const centerY = sumY / count;
-                    
-                    // 最初に検知した位置、または画面中央を基準軸にする
-                    if (baseY === null) baseY = canvas.height / 2;
+                    if (baseY === null) baseY = centerY;
 
-                    // 軸からのズレを計算
-                    const deltaL = Math.abs(centerY - baseY);
+                    const deltaL = centerY - baseY;
                     valueDisplay.innerText = deltaL.toFixed(2);
 
-                    // 視覚化：赤い線の中心に青い丸を描画
-                    ctx.fillStyle = "blue";
+                    // 可視化（青い線で現在の位置を表示）
+                    ctx.strokeStyle = "cyan";
+                    ctx.lineWidth = 5;
                     ctx.beginPath();
-                    ctx.arc(canvas.width / 2, centerY, 10, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.moveTo(0, centerY);
+                    ctx.lineTo(canvas.width, centerY);
+                    ctx.stroke();
                 }
             }
+            // ループを維持
             requestAnimationFrame(process);
         }
     </script>
