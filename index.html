@@ -16,10 +16,37 @@ width: 100vw;
 height: 100vh;
 }
 
+#rotate-msg {
+display: none;
+position: fixed;
+inset: 0;
+background: #000;
+color: #fff;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1rem;
+z-index: 999;
+font-size: 0.9rem;
+letter-spacing: 0.15em;
+text-align: center;
+}
+.rotate-icon {
+font-size: 3rem;
+animation: rotateAnim 1.5s ease-in-out infinite;
+}
+@keyframes rotateAnim {
+0%,100% { transform: rotate(0deg); }
+50% { transform: rotate(90deg); }
+}
+@media (orientation: portrait) {
+#rotate-msg { display: flex; }
+}
+
 #start-screen {
 position: fixed;
 inset: 0;
-background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%);
+background: #000;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -27,68 +54,32 @@ justify-content: center;
 z-index: 100;
 gap: 2rem;
 }
-
 .logo {
 font-size: clamp(2rem, 6vw, 4rem);
 font-weight: 900;
 letter-spacing: 0.3em;
 color: #fff;
 text-transform: uppercase;
-position: relative;
 }
-.logo::before {
-content: ‘VR MODE’;
-position: absolute;
-inset: 0;
-color: #00ffe7;
-clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-transform: translateX(3px);
-opacity: 0.6;
-}
-.logo::after {
-content: ‘VR MODE’;
-position: absolute;
-inset: 0;
-color: #ff2d78;
-clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
-transform: translateX(-3px);
-opacity: 0.6;
-}
-
 .subtitle {
 color: #555;
 font-size: 0.8rem;
 letter-spacing: 0.2em;
 text-transform: uppercase;
 }
-
 #start-btn {
-background: transparent;
-border: 1px solid #00ffe7;
-color: #00ffe7;
+background: #fff;
+border: none;
+color: #000;
 padding: 1rem 3rem;
 font-family: inherit;
 font-size: 0.9rem;
 letter-spacing: 0.2em;
 text-transform: uppercase;
 cursor: pointer;
-position: relative;
-overflow: hidden;
-transition: color 0.3s;
 }
-#start-btn::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: #00ffe7;
-transform: translateX(-100%);
-transition: transform 0.3s;
-z-index: -1;
-}
-#start-btn:hover::before { transform: translateX(0); }
-#start-btn:hover { color: #000; }
+#start-btn:hover { background: #ddd; }
 
-/* VR container */
 #vr-container {
 display: none;
 width: 100vw;
@@ -113,11 +104,6 @@ object-fit: cover;
 display: block;
 }
 
-/* Barrel distortion via SVG filter */
-#left-eye  { filter: url(#barrel-left); }
-#right-eye { filter: url(#barrel-right); }
-
-/* Center divider */
 #divider {
 position: fixed;
 left: 50%;
@@ -129,94 +115,9 @@ transform: translateX(-50%);
 z-index: 10;
 }
 
-/* HUD overlays */
-.hud {
-position: absolute;
-inset: 0;
-pointer-events: none;
-z-index: 5;
-}
-
-/* Crosshair */
-.crosshair {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 24px;
-height: 24px;
-}
-.crosshair::before,
-.crosshair::after {
-content: ‘’;
-position: absolute;
-background: rgba(0,255,231,0.6);
-}
-.crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
-.crosshair::after  { width: 100%; height: 2px; top: 50%; transform: translateY(-50%); }
-
-/* Corner brackets */
-.corner {
-position: absolute;
-width: 20px;
-height: 20px;
-border-color: rgba(0,255,231,0.4);
-border-style: solid;
-}
-.corner.tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
-.corner.tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
-.corner.bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
-.corner.br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
-
-/* Scan line effect */
-.scanlines {
-position: absolute;
-inset: 0;
-background: repeating-linear-gradient(
-0deg,
-transparent,
-transparent 2px,
-rgba(0,0,0,0.08) 2px,
-rgba(0,0,0,0.08) 4px
-);
-pointer-events: none;
-z-index: 6;
-}
-
-/* Vignette */
-.vignette {
-position: absolute;
-inset: 0;
-background: radial-gradient(ellipse at center,
-transparent 50%,
-rgba(0,0,0,0.7) 100%
-);
-pointer-events: none;
-z-index: 7;
-}
-
-/* Info badge */
-#info {
-position: fixed;
-bottom: 1.5rem;
-left: 50%;
-transform: translateX(-50%);
-z-index: 20;
-display: none;
-gap: 2rem;
-align-items: center;
-}
-.badge {
-color: rgba(0,255,231,0.5);
-font-size: 0.6rem;
-letter-spacing: 0.15em;
-text-transform: uppercase;
-}
-
-/* IPD slider */
 #ipd-wrap {
 position: fixed;
-top: 1rem;
+bottom: 1rem;
 left: 50%;
 transform: translateX(-50%);
 z-index: 20;
@@ -226,7 +127,7 @@ align-items: center;
 gap: 0.3rem;
 }
 #ipd-label {
-color: rgba(0,255,231,0.4);
+color: rgba(255,255,255,0.4);
 font-size: 0.55rem;
 letter-spacing: 0.15em;
 }
@@ -234,26 +135,26 @@ letter-spacing: 0.15em;
 -webkit-appearance: none;
 width: 120px;
 height: 2px;
-background: rgba(0,255,231,0.2);
+background: rgba(255,255,255,0.3);
 outline: none;
 cursor: pointer;
 }
 #ipd::-webkit-slider-thumb {
 -webkit-appearance: none;
-width: 10px;
-height: 10px;
+width: 12px;
+height: 12px;
 border-radius: 50%;
-background: #00ffe7;
+background: #fff;
 }
 
 #exit-btn {
 position: fixed;
-top: 1rem;
-right: 1rem;
+top: 0.8rem;
+right: 0.8rem;
 z-index: 20;
-background: transparent;
-border: 1px solid rgba(255,45,120,0.4);
-color: rgba(255,45,120,0.6);
+background: rgba(0,0,0,0.5);
+border: 1px solid rgba(255,255,255,0.3);
+color: rgba(255,255,255,0.6);
 padding: 0.4rem 0.8rem;
 font-family: inherit;
 font-size: 0.6rem;
@@ -261,14 +162,9 @@ letter-spacing: 0.15em;
 cursor: pointer;
 display: none;
 text-transform: uppercase;
-transition: all 0.2s;
 }
-#exit-btn:hover {
-border-color: #ff2d78;
-color: #ff2d78;
-}
+#exit-btn:hover { color: #fff; border-color: #fff; }
 
-/* Error message */
 #error-msg {
 position: fixed;
 inset: 0;
@@ -276,7 +172,7 @@ display: none;
 align-items: center;
 justify-content: center;
 background: #000;
-color: #ff2d78;
+color: #fff;
 font-size: 0.9rem;
 letter-spacing: 0.1em;
 text-align: center;
@@ -286,9 +182,9 @@ flex-direction: column;
 gap: 1rem;
 }
 #error-msg button {
-background: transparent;
-border: 1px solid #ff2d78;
-color: #ff2d78;
+background: #fff;
+border: none;
+color: #000;
 padding: 0.5rem 1.5rem;
 font-family: inherit;
 cursor: pointer;
@@ -302,24 +198,10 @@ margin-top: 0.5rem;
 </head>
 <body>
 
-<!-- SVG filters for barrel distortion -->
-
-<svg style="position:absolute;width:0;height:0">
-  <defs>
-    <filter id="barrel-left" x="-5%" y="-5%" width="110%" height="110%">
-      <feDisplacementMap in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G">
-        <feFuncR type="gamma" amplitude="1" exponent="1" offset="0"/>
-      </feDisplacementMap>
-    </filter>
-    <filter id="barrel-right" x="-5%" y="-5%" width="110%" height="110%">
-      <feDisplacementMap in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G">
-        <feFuncR type="gamma" amplitude="1" exponent="1" offset="0"/>
-      </feDisplacementMap>
-    </filter>
-  </defs>
-</svg>
-
-<!-- Start Screen -->
+<div id="rotate-msg">
+  <div class="rotate-icon">📱</div>
+  <div>端末を横向きにしてください</div>
+</div>
 
 <div id="start-screen">
   <div class="logo">VR MODE</div>
@@ -327,56 +209,24 @@ margin-top: 0.5rem;
   <button id="start-btn" onclick="startVR()">▶ カメラを起動</button>
 </div>
 
-<!-- Error Screen -->
-
 <div id="error-msg">
   <div id="error-text">カメラへのアクセスが拒否されました</div>
   <button onclick="location.reload()">再試行</button>
 </div>
 
-<!-- VR View -->
-
 <div id="vr-container">
   <div id="left-eye" class="eye">
     <video id="video-left" autoplay playsinline muted></video>
-    <div class="hud">
-      <div class="crosshair"></div>
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-    </div>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
   </div>
-
   <div id="right-eye" class="eye">
     <video id="video-right" autoplay playsinline muted></video>
-    <div class="hud">
-      <div class="crosshair"></div>
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-    </div>
-    <div class="scanlines"></div>
-    <div class="vignette"></div>
   </div>
-
   <div id="divider"></div>
 </div>
 
-<!-- Controls -->
-
 <div id="ipd-wrap">
-  <div id="ipd-label">IPD ADJUST</div>
-  <input type="range" id="ipd" min="-40" max="40" value="0" oninput="adjustIPD(this.value)">
-</div>
-
-<div id="info">
-  <span class="badge">◀ LEFT EYE</span>
-  <span class="badge" style="color:rgba(255,45,120,0.4)">●</span>
-  <span class="badge">RIGHT EYE ▶</span>
+  <div id="ipd-label">IPD</div>
+  <input type="range" id="ipd" min="-60" max="60" value="0" oninput="adjustIPD(this.value)">
 </div>
 
 <button id="exit-btn" onclick="exitVR()">✕ EXIT</button>
@@ -386,12 +236,10 @@ let stream = null;
 
 async function startVR() {
   try {
+    try { await screen.orientation.lock('landscape'); } catch(e) {}
+
     stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: 'environment',
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      },
+      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
       audio: false
     });
 
@@ -399,24 +247,16 @@ async function startVR() {
     const vR = document.getElementById('video-right');
     vL.srcObject = stream;
     vR.srcObject = stream;
-
     await Promise.all([vL.play(), vR.play()]);
 
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('vr-container').style.display = 'block';
-    document.getElementById('info').style.display = 'flex';
     document.getElementById('ipd-wrap').style.display = 'flex';
     document.getElementById('exit-btn').style.display = 'block';
 
-    // Fullscreen
-    try {
-      if (document.documentElement.requestFullscreen) {
-        await document.documentElement.requestFullscreen();
-      }
-    } catch(e) {}
+    try { await document.documentElement.requestFullscreen(); } catch(e) {}
 
   } catch(err) {
-    const errEl = document.getElementById('error-msg');
     const errText = document.getElementById('error-text');
     if (err.name === 'NotAllowedError') {
       errText.textContent = 'カメラへのアクセスが拒否されました。\nブラウザの設定でカメラを許可してください。';
@@ -425,34 +265,26 @@ async function startVR() {
     } else {
       errText.textContent = 'カメラの起動に失敗しました: ' + err.message;
     }
-    errEl.style.display = 'flex';
+    document.getElementById('error-msg').style.display = 'flex';
   }
 }
 
 function adjustIPD(val) {
-  const lEye = document.getElementById('left-eye');
-  const rEye = document.getElementById('right-eye');
   const offset = parseInt(val);
-  lEye.querySelector('video').style.transform = `translateX(${offset}px)`;
-  rEye.querySelector('video').style.transform = `translateX(${-offset}px)`;
+  document.getElementById('video-left').style.transform  = `translateX(${offset}px)`;
+  document.getElementById('video-right').style.transform = `translateX(${-offset}px)`;
 }
 
 function exitVR() {
-  if (stream) {
-    stream.getTracks().forEach(t => t.stop());
-    stream = null;
-  }
-  if (document.exitFullscreen && document.fullscreenElement) {
-    document.exitFullscreen();
-  }
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  try { screen.orientation.unlock(); } catch(e) {}
+  if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen();
   document.getElementById('vr-container').style.display = 'none';
-  document.getElementById('info').style.display = 'none';
   document.getElementById('ipd-wrap').style.display = 'none';
   document.getElementById('exit-btn').style.display = 'none';
   document.getElementById('start-screen').style.display = 'flex';
 }
 
-// Prevent scroll on mobile
 document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 </script>
 
