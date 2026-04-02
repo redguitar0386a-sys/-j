@@ -7,688 +7,388 @@
 <title>NEUROVISION // AR-VR</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --c: #00ffe7;
-  --m: #ff2d78;
-  --y: #f5e642;
-  --g: #39ff14;
-  --dim: rgba(0,255,231,0.15);
-  --bg: #000;
-}
+:root { --c:#00ffe7; --m:#ff2d78; --y:#f5e642; --g:#39ff14; }
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--bg);
-  overflow: hidden;
-  font-family: 'Share Tech Mono', monospace;
-  width: 100vw; height: 100vh;
-  cursor: crosshair;
-}
+body { background:#000; overflow:hidden; font-family:'Share Tech Mono',monospace; width:100vw; height:100vh; cursor:crosshair; }
 
-/* ── ROTATE ── */
+/* ROTATE */
 #rotate-msg {
-display: none;
-position: fixed; inset: 0;
-background: #000;
-color: var(–c);
-flex-direction: column;
-align-items: center; justify-content: center;
-gap: 1.2rem; z-index: 999;
-font-family: ‘Orbitron’, monospace;
-font-size: 0.8rem; letter-spacing: 0.2em;
+display:none; position:fixed; inset:0; background:#000; color:var(–c);
+flex-direction:column; align-items:center; justify-content:center;
+gap:1.2rem; z-index:999; font-family:‘Orbitron’,monospace; font-size:0.8rem; letter-spacing:0.2em;
 }
-.rotate-icon { font-size: 3rem; animation: rotSpin 1.5s ease-in-out infinite; }
+.ri { font-size:3rem; animation:rotSpin 1.5s ease-in-out infinite; }
 @keyframes rotSpin { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(90deg)} }
-@media (orientation:portrait) { #rotate-msg { display:flex; } }
+@media (orientation:portrait){ #rotate-msg{display:flex;} }
 
-/* ── START SCREEN ── */
+/* START */
 #start-screen {
-position: fixed; inset: 0;
-background: #000;
-display: flex; flex-direction: column;
-align-items: center; justify-content: center;
-z-index: 100; gap: 0;
-overflow: hidden;
+position:fixed; inset:0; background:#000;
+display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; overflow:hidden;
 }
-.start-grid {
-position: absolute; inset: 0;
-background-image:
-linear-gradient(rgba(0,255,231,0.05) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0,255,231,0.05) 1px, transparent 1px);
-background-size: 40px 40px;
-animation: gridShift 8s linear infinite;
+.sg {
+position:absolute; inset:0;
+background-image:linear-gradient(rgba(0,255,231,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,231,0.05) 1px,transparent 1px);
+background-size:40px 40px; animation:gs 8s linear infinite;
 }
-@keyframes gridShift { from{background-position:0 0} to{background-position:40px 40px} }
-
-.start-scanline {
-position: absolute; inset: 0;
-background: repeating-linear-gradient(0deg,
-transparent, transparent 3px,
-rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px);
-pointer-events: none;
+@keyframes gs { from{background-position:0 0} to{background-position:40px 40px} }
+.ssl {
+position:absolute; inset:0; pointer-events:none;
+background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.15) 3px,rgba(0,0,0,0.15) 4px);
 }
-
-.start-content {
-position: relative; z-index: 2;
-display: flex; flex-direction: column;
-align-items: center; gap: 1.5rem;
-padding: 3rem;
-border: 1px solid rgba(0,255,231,0.2);
-background: rgba(0,0,0,0.8);
+.sc {
+position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:1.4rem;
+padding:2.5rem 3rem; border:1px solid rgba(0,255,231,0.2); background:rgba(0,0,0,0.85);
 }
-.start-content::before {
-content: ‘’;
-position: absolute;
-top: -1px; left: 20%; right: 20%; height: 2px;
-background: var(–c);
-box-shadow: 0 0 20px var(–c);
-}
-.start-content::after {
-content: ‘’;
-position: absolute;
-bottom: -1px; left: 20%; right: 20%; height: 2px;
-background: var(–m);
-box-shadow: 0 0 20px var(–m);
-}
-
-.logo-wrap { position: relative; }
+.sc::before { content:’’; position:absolute; top:-1px; left:20%; right:20%; height:2px; background:var(–c); box-shadow:0 0 20px var(–c); }
+.sc::after  { content:’’; position:absolute; bottom:-1px; left:20%; right:20%; height:2px; background:var(–m); box-shadow:0 0 20px var(–m); }
 .logo {
-font-family: ‘Orbitron’, monospace;
-font-weight: 900;
-font-size: clamp(1.8rem, 5vw, 3.5rem);
-letter-spacing: 0.15em;
-color: #fff;
-text-transform: uppercase;
-position: relative;
-text-shadow: 0 0 30px rgba(0,255,231,0.5);
+font-family:‘Orbitron’,monospace; font-weight:900; font-size:clamp(1.8rem,5vw,3.2rem);
+letter-spacing:0.15em; color:#fff; text-transform:uppercase; position:relative;
+text-shadow:0 0 30px rgba(0,255,231,0.5);
 }
-.logo-sub {
-font-size: 0.55rem;
-letter-spacing: 0.4em;
-color: var(–m);
-text-align: center;
-margin-top: 0.3rem;
-}
-.glitch {
-position: absolute; inset: 0;
-color: var(–c);
-animation: glitch1 3s infinite;
-clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-transform: translateX(3px);
-opacity: 0.7;
-}
-.glitch2 {
-position: absolute; inset: 0;
-color: var(–m);
-animation: glitch2 3s infinite;
-clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-transform: translateX(-3px);
-opacity: 0.7;
-}
-@keyframes glitch1 {
-0%,95%,100%{transform:translateX(3px);opacity:0.7}
-96%{transform:translateX(-8px) skewX(5deg);opacity:1}
-97%{transform:translateX(8px);opacity:0.5}
-98%{transform:translateX(0);opacity:0}
-99%{transform:translateX(3px);opacity:0.7}
-}
-@keyframes glitch2 {
-0%,94%,100%{transform:translateX(-3px);opacity:0.7}
-95%{transform:translateX(10px) skewX(-5deg);opacity:1}
-96%{transform:translateX(-5px);opacity:0.4}
-97%{transform:translateX(0);opacity:0}
-98%{transform:translateX(-3px);opacity:0.7}
-}
-
-.sys-info {
-font-size: 0.55rem;
-color: rgba(0,255,231,0.5);
-letter-spacing: 0.15em;
-text-align: center;
-line-height: 1.8;
-}
-.sys-info span { color: var(–y); }
-
+.logo-sub { font-size:0.5rem; letter-spacing:0.4em; color:var(–m); text-align:center; margin-top:0.3rem; }
+.g1 { position:absolute;inset:0;color:var(–c);animation:gl1 3s infinite;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(3px);opacity:0.7; }
+.g2 { position:absolute;inset:0;color:var(–m);animation:gl2 3s infinite;clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(-3px);opacity:0.7; }
+@keyframes gl1 { 0%,95%,100%{transform:translateX(3px);opacity:0.7} 96%{transform:translateX(-8px) skewX(5deg);opacity:1} 97%{transform:translateX(8px);opacity:0.5} 98%{transform:translateX(0);opacity:0} }
+@keyframes gl2 { 0%,94%,100%{transform:translateX(-3px);opacity:0.7} 95%{transform:translateX(10px) skewX(-5deg);opacity:1} 96%{transform:translateX(-5px);opacity:0.4} 97%{transform:translateX(0);opacity:0} }
+.sysinfo { font-size:0.5rem; color:rgba(0,255,231,0.5); letter-spacing:0.15em; text-align:center; line-height:1.9; }
+.sysinfo span { color:var(–y); }
 #start-btn {
-font-family: ‘Orbitron’, monospace;
-font-size: 0.75rem;
-font-weight: 700;
-letter-spacing: 0.3em;
-color: #000;
-background: var(–c);
-border: none;
-padding: 0.9rem 2.5rem;
-cursor: pointer;
-position: relative;
-overflow: hidden;
-text-transform: uppercase;
-transition: all 0.2s;
-clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+font-family:‘Orbitron’,monospace; font-size:0.75rem; font-weight:700; letter-spacing:0.3em;
+color:#000; background:var(–c); border:none; padding:0.9rem 2.5rem; cursor:pointer;
+text-transform:uppercase; transition:all 0.2s; position:relative; overflow:hidden;
+clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
 }
-#start-btn:hover {
-background: var(–m);
-color: #fff;
-box-shadow: 0 0 30px var(–m);
-}
-#start-btn::before {
-content: ‘’;
-position: absolute; inset: 0;
-background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-transform: translateX(-100%);
-animation: btnShine 2.5s infinite;
-}
-@keyframes btnShine { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+#start-btn:hover { background:var(–m); color:#fff; box-shadow:0 0 30px var(–m); }
+#start-btn::before { content:’’; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); transform:translateX(-100%); animation:shine 2.5s infinite; }
+@keyframes shine { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
 
-.boot-log {
-font-size: 0.5rem;
-color: rgba(0,255,231,0.35);
-letter-spacing: 0.1em;
-text-align: left;
-width: 100%;
-line-height: 1.7;
+/* VR */
+#vr-container { display:none; width:100vw; height:100vh; position:relative; }
+.eye { position:absolute; top:0; width:50%; height:100%; overflow:hidden; }
+#left-eye  { left:0; }
+#right-eye { left:50%; }
+.eye video { width:100%; height:100%; object-fit:cover; display:block; }
+#divider { position:fixed; left:50%; top:0; width:3px; height:100%; background:#000; transform:translateX(-50%); z-index:10; }
+
+/* DEPTH canvas per eye */
+.depth-canvas {
+position:absolute; inset:0; pointer-events:none; z-index:5; opacity:0.45;
 }
 
-/* ── VR CONTAINER ── */
-#vr-container {
-display: none;
-width: 100vw; height: 100vh;
-position: relative;
-}
+/* AR canvas (labels) on top */
+#ar-canvas { position:fixed; inset:0; pointer-events:none; z-index:15; }
 
-.eye {
-position: absolute; top: 0;
-width: 50%; height: 100%;
-overflow: hidden;
-}
-#left-eye  { left: 0; }
-#right-eye { left: 50%; }
-
-.eye video {
-width: 100%; height: 100%;
-object-fit: cover; display: block;
-}
-
-/* Chromatic aberration tint per eye */
-#left-eye  video { filter: hue-rotate(0deg); }
-#right-eye video { filter: hue-rotate(0deg); }
-
-/* center divider */
-#divider {
-position: fixed; left: 50%; top: 0;
-width: 3px; height: 100%;
-background: #000;
-transform: translateX(-50%);
-z-index: 10;
-}
-
-/* ── AR CANVAS OVERLAY ── */
-#ar-canvas {
-position: fixed; inset: 0;
-pointer-events: none;
-z-index: 15;
-}
-
-/* ── HUD PANELS ── */
-.hud-layer {
-position: fixed; inset: 0;
-pointer-events: none;
-z-index: 20;
-}
-
-/* Crosshairs */
-.xhair {
-position: absolute;
-top: 50%; left: 25%;
-transform: translate(-50%, -50%);
-width: 40px; height: 40px;
-}
-.xhair.right { left: 75%; }
-.xhair::before, .xhair::after {
-content: ‘’;
-position: absolute;
-background: var(–c);
-opacity: 0.7;
-}
-.xhair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
-.xhair::after  { width: 100%; height: 2px; top: 50%; transform: translateY(-50%); }
-.xhair-inner {
-position: absolute; inset: 12px;
-border: 1px solid var(–c);
-opacity: 0.4;
-animation: xhairPulse 2s ease-in-out infinite;
-}
-@keyframes xhairPulse {
-0%,100%{opacity:0.4;transform:scale(1)}
-50%{opacity:0.8;transform:scale(1.15)}
-}
-
-/* Brackets corners */
-.bracket {
-position: absolute;
-width: 22px; height: 22px;
-border-color: var(–c);
-border-style: solid;
-opacity: 0.5;
-}
-.bracket.tl { top:8px; left:8px; border-width:2px 0 0 2px; }
-.bracket.tr { top:8px; right:8px; border-width:2px 2px 0 0; }
-.bracket.bl { bottom:8px; left:8px; border-width:0 0 2px 2px; }
-.bracket.br { bottom:8px; right:8px; border-width:0 2px 2px 0; }
-
-/* Scan sweep */
-.scan-sweep {
-position: absolute; inset: 0;
-background: linear-gradient(180deg,
-transparent 0%,
-rgba(0,255,231,0.04) 48%,
-rgba(0,255,231,0.12) 50%,
-rgba(0,255,231,0.04) 52%,
-transparent 100%);
-animation: sweep 4s linear infinite;
-}
-@keyframes sweep { from{transform:translateY(-100%)} to{transform:translateY(200%)} }
-
-/* Scanlines */
+/* HUD */
+.hud-layer { position:fixed; inset:0; pointer-events:none; z-index:20; }
 .scanlines {
-position: absolute; inset: 0;
-background: repeating-linear-gradient(0deg,
-transparent, transparent 3px,
-rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+position:absolute; inset:0;
+background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);
 }
+.vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.7) 100%); }
+.sweep { position:absolute; inset:0; background:linear-gradient(180deg,transparent 0%,rgba(0,255,231,0.04) 48%,rgba(0,255,231,0.1) 50%,rgba(0,255,231,0.04) 52%,transparent 100%); animation:sw 4s linear infinite; }
+@keyframes sw { from{transform:translateY(-100%)} to{transform:translateY(200%)} }
 
-/* Vignette */
-.vignette {
-position: absolute; inset: 0;
-background: radial-gradient(ellipse at center,
-transparent 55%, rgba(0,0,0,0.65) 100%);
-}
+/* Crosshair */
+.xhair { position:absolute; top:50%; width:40px; height:40px; transform:translate(-50%,-50%); }
+.xhair.l { left:25%; } .xhair.r { left:75%; }
+.xhair::before,.xhair::after { content:’’; position:absolute; background:var(–c); opacity:0.6; }
+.xhair::before { width:2px; height:100%; left:50%; transform:translateX(-50%); }
+.xhair::after  { width:100%; height:2px; top:50%; transform:translateY(-50%); }
+.xi { position:absolute; inset:12px; border:1px solid var(–c); opacity:0.4; animation:xp 2s ease-in-out infinite; }
+@keyframes xp { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.15)} }
 
-/* ── STATUS PANELS ── */
+/* Brackets */
+.br { position:absolute; width:22px; height:22px; border-color:var(–c); border-style:solid; opacity:0.5; }
+.br.tl{top:8px;border-width:2px 0 0 2px;} .br.tr{top:8px;border-width:2px 2px 0 0;}
+.br.bl{bottom:8px;border-width:0 0 2px 2px;} .br.br2{bottom:8px;border-width:0 2px 2px 0;}
+
+/* Panels */
 .panel {
-position: absolute;
-background: rgba(0,0,0,0.75);
-border: 1px solid rgba(0,255,231,0.25);
-padding: 0.4rem 0.6rem;
-font-size: 0.45rem;
-letter-spacing: 0.12em;
-color: var(–c);
-line-height: 1.9;
-backdrop-filter: blur(4px);
+position:absolute; background:rgba(0,0,0,0.78); border:1px solid rgba(0,255,231,0.22);
+padding:0.4rem 0.6rem; font-size:0.44rem; letter-spacing:0.12em; color:var(–c); line-height:1.9;
+backdrop-filter:blur(4px);
 }
-.panel::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0; height: 1px;
-background: var(–c);
-box-shadow: 0 0 8px var(–c);
-opacity: 0.6;
-}
-.panel .label { color: rgba(0,255,231,0.4); }
-.panel .val   { color: var(–y); }
-.panel .alert { color: var(–m); animation: blink 1s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.panel::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:var(–c); box-shadow:0 0 8px var(–c); opacity:0.6; }
+.panel .lbl { color:rgba(0,255,231,0.4); } .panel .val { color:var(–y); }
+.panel .alrt { color:var(–m); animation:blk 1s infinite; }
+@keyframes blk { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ptl { top:10px; left:10px; min-width:110px; }
+.ptr { top:10px; right:10px; min-width:110px; text-align:right; }
+.ptr::before { background:var(–m); box-shadow:0 0 8px var(–m); }
+.pbl { bottom:48px; left:10px; min-width:120px; }
+.pbr { bottom:48px; right:10px; min-width:120px; text-align:right; }
+.cbanner { position:absolute; top:10px; left:50%; transform:translateX(-50%); font-family:‘Orbitron’,monospace; font-size:0.5rem; letter-spacing:0.3em; color:rgba(0,255,231,0.55); white-space:nowrap; text-shadow:0 0 10px var(–c); }
 
-/* top-left */
-.panel.tl { top: 10px; left: 10px; min-width: 110px; }
-/* top-right — right side mirror */
-.panel.tr { top: 10px; right: 10px; min-width: 110px; text-align: right; }
-.panel.tr::before { background: var(–m); box-shadow: 0 0 8px var(–m); }
-/* bottom-left */
-.panel.bl { bottom: 40px; left: 10px; min-width: 130px; }
-/* bottom-right */
-.panel.br { bottom: 40px; right: 10px; min-width: 130px; text-align: right; }
+/* Radar */
+.radar-wrap { position:absolute; bottom:48px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:2px; }
+.radar { width:44px; height:44px; border:1px solid rgba(0,255,231,0.3); border-radius:50%; position:relative; overflow:hidden; }
+.radar::before { content:’’; position:absolute; inset:0; border-radius:50%; background:conic-gradient(rgba(0,255,231,0.45) 0deg,transparent 60deg,transparent 360deg); animation:rs 2s linear infinite; }
+@keyframes rs { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.radar::after { content:’’; position:absolute; top:50%; left:50%; width:3px; height:3px; background:var(–c); border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 6px var(–c); }
+.rc::before { content:’’; position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(0,255,231,0.15); }
+.rc::after  { content:’’; position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(0,255,231,0.15); }
+.rlbl { font-size:0.38rem; letter-spacing:0.15em; color:rgba(0,255,231,0.3); }
 
-/* Centre top banner */
-.centre-banner {
-position: absolute;
-top: 10px; left: 50%; transform: translateX(-50%);
-font-family: ‘Orbitron’, monospace;
-font-size: 0.55rem;
-letter-spacing: 0.3em;
-color: rgba(0,255,231,0.6);
-text-align: center;
-white-space: nowrap;
-text-shadow: 0 0 10px var(–c);
-}
-
-/* Eye labels */
-.eye-label {
-position: absolute;
-bottom: 40px;
-font-size: 0.4rem;
-letter-spacing: 0.2em;
-color: rgba(0,255,231,0.3);
-}
-.eye-label.l { left: calc(25% - 20px); transform: translateX(-50%); }
-.eye-label.r { left: calc(75% - 20px); transform: translateX(-50%); }
-
-/* Radar mini */
-.radar-wrap {
-position: absolute;
-bottom: 48px; left: 50%;
-transform: translateX(-50%);
-display: flex; flex-direction: column;
-align-items: center; gap: 2px;
-}
-.radar {
-width: 48px; height: 48px;
-border: 1px solid rgba(0,255,231,0.3);
-border-radius: 50%;
-position: relative;
-overflow: hidden;
-}
-.radar::before {
-content: ‘’;
-position: absolute; inset: 0;
-border-radius: 50%;
-background: conic-gradient(rgba(0,255,231,0.4) 0deg, transparent 60deg, transparent 360deg);
-animation: radarSpin 2s linear infinite;
-}
-.radar::after {
-content: ‘’;
-position: absolute; top: 50%; left: 50%;
-width: 3px; height: 3px;
-background: var(–c);
-border-radius: 50%;
-transform: translate(-50%,-50%);
-box-shadow: 0 0 6px var(–c);
-}
-@keyframes radarSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-.radar-cross {
-position: absolute; inset: 0;
-}
-.radar-cross::before { content:’’; position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(0,255,231,0.15); }
-.radar-cross::after  { content:’’; position:absolute; left:50%; top:0; bottom:0; width:1px; background:rgba(0,255,231,0.15); }
-.radar-label { font-size: 0.38rem; letter-spacing:0.15em; color:rgba(0,255,231,0.3); }
-
-/* ── AI PANEL ── */
+/* AI panel */
 #ai-panel {
-position: fixed;
-bottom: 10px; left: 50%;
-transform: translateX(-50%);
-z-index: 25;
-background: rgba(0,0,0,0.85);
-border: 1px solid rgba(255,45,120,0.4);
-padding: 0.4rem 1rem;
-min-width: 280px; max-width: 420px;
-display: none;
-flex-direction: column; gap: 0.2rem;
-backdrop-filter: blur(8px);
+position:fixed; bottom:10px; left:50%; transform:translateX(-50%);
+z-index:25; background:rgba(0,0,0,0.88); border:1px solid rgba(255,45,120,0.4);
+padding:0.4rem 1rem; min-width:260px; max-width:400px;
+display:none; flex-direction:column; gap:0.25rem; backdrop-filter:blur(8px);
 }
-#ai-panel::before {
-content: ‘’;
-position: absolute; top:0; left:0; right:0; height:1px;
-background: var(–m); box-shadow: 0 0 12px var(–m);
-}
-#ai-status {
-font-size: 0.4rem; letter-spacing:0.2em;
-color: rgba(255,45,120,0.6);
-display: flex; align-items: center; gap: 0.4rem;
-}
-.ai-dot {
-width: 5px; height: 5px; border-radius:50%;
-background: var(–m);
-box-shadow: 0 0 6px var(–m);
-animation: blink 0.8s infinite;
-}
-#ai-text {
-font-size: 0.5rem; letter-spacing: 0.1em;
-color: rgba(255,255,255,0.8);
-line-height: 1.6;
-min-height: 1.5em;
-}
+#ai-panel::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:var(–m); box-shadow:0 0 12px var(–m); }
+#ai-status { font-size:0.4rem; letter-spacing:0.18em; color:rgba(255,45,120,0.6); display:flex; align-items:center; gap:0.4rem; }
+.ai-dot { width:5px; height:5px; border-radius:50%; background:var(–m); box-shadow:0 0 6px var(–m); animation:blk 0.8s infinite; }
+#ai-text { font-size:0.48rem; letter-spacing:0.1em; color:rgba(255,255,255,0.8); line-height:1.6; min-height:1.5em; }
 #analyze-btn {
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 0.5rem; letter-spacing:0.2em;
-color: var(–m); background: transparent;
-border: 1px solid rgba(255,45,120,0.4);
-padding: 0.3rem 0.8rem;
-cursor: pointer; pointer-events: all;
-align-self: flex-end;
-transition: all 0.2s;
-clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+font-family:‘Share Tech Mono’,monospace; font-size:0.48rem; letter-spacing:0.2em;
+color:var(–m); background:transparent; border:1px solid rgba(255,45,120,0.4);
+padding:0.3rem 0.8rem; cursor:pointer; pointer-events:all; align-self:flex-end;
+transition:all 0.2s; clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
 }
-#analyze-btn:hover { background: var(–m); color:#000; }
+#analyze-btn:hover { background:var(–m); color:#000; }
 
-/* ── CONTROLS ── */
-#controls {
-position: fixed; bottom: 8px; left: 50%;
-transform: translateX(-50%);
-z-index: 30;
-display: none;
-align-items: center; gap: 1.5rem;
+/* Depth legend */
+#depth-legend {
+position:fixed; right:10px; top:50%; transform:translateY(-50%);
+z-index:22; display:none; flex-direction:column; align-items:center; gap:3px;
 }
-.ctrl-group {
-display: flex; flex-direction: column;
-align-items: center; gap: 3px;
+.dl-bar {
+width:8px; height:60px; border-radius:3px;
+background:linear-gradient(to bottom,#ff0000,#ff8800,#ffff00,#00ff00,#0000ff);
+border:1px solid rgba(255,255,255,0.2);
 }
-.ctrl-label {
-font-size: 0.4rem; letter-spacing:0.15em;
-color: rgba(0,255,231,0.35);
-}
-#ipd {
--webkit-appearance: none;
-width: 80px; height: 1px;
-background: rgba(0,255,231,0.3);
-outline: none; cursor: pointer;
-}
-#ipd::-webkit-slider-thumb {
--webkit-appearance: none;
-width: 10px; height: 10px;
-border-radius: 50%;
-background: var(–c);
-box-shadow: 0 0 6px var(–c);
-}
+.dl-lbl { font-size:0.35rem; letter-spacing:0.1em; color:rgba(255,255,255,0.4); text-align:center; }
+
+/* Controls */
+#controls { position:fixed; bottom:8px; left:50%; transform:translateX(-50%); z-index:30; display:none; align-items:center; gap:1.5rem; }
+.cg { display:flex; flex-direction:column; align-items:center; gap:3px; }
+.clbl { font-size:0.38rem; letter-spacing:0.15em; color:rgba(0,255,231,0.35); }
+#ipd { -webkit-appearance:none; width:80px; height:1px; background:rgba(0,255,231,0.3); outline:none; cursor:pointer; }
+#ipd::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:10px; border-radius:50%; background:var(–c); box-shadow:0 0 6px var(–c); }
 
 #exit-btn {
-position: fixed; top: 8px; right: 8px;
-z-index: 30;
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 0.5rem; letter-spacing:0.15em;
-background: rgba(0,0,0,0.7);
-border: 1px solid rgba(255,45,120,0.35);
-color: rgba(255,45,120,0.5);
-padding: 0.35rem 0.7rem;
-cursor: pointer; display: none;
-text-transform: uppercase;
-transition: all 0.2s;
+position:fixed; top:8px; right:8px; z-index:30;
+font-family:‘Share Tech Mono’,monospace; font-size:0.5rem; letter-spacing:0.15em;
+background:rgba(0,0,0,0.7); border:1px solid rgba(255,45,120,0.35); color:rgba(255,45,120,0.5);
+padding:0.35rem 0.7rem; cursor:pointer; display:none; text-transform:uppercase; transition:all 0.2s;
 }
-#exit-btn:hover { color: var(–m); border-color: var(–m); box-shadow: 0 0 12px rgba(255,45,120,0.4); }
+#exit-btn:hover { color:var(–m); border-color:var(–m); box-shadow:0 0 12px rgba(255,45,120,0.4); }
 
-/* ── ERROR ── */
+/* Error */
 #error-msg {
-position: fixed; inset: 0;
-display: none; align-items:center; justify-content:center;
-background: #000; color: var(–m);
-font-size: 0.85rem; letter-spacing:0.1em;
-text-align:center; padding:2rem;
-z-index: 200; flex-direction:column; gap:1rem;
-font-family: ‘Orbitron’, monospace;
+position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+background:#000; color:var(–m); font-size:0.85rem; letter-spacing:0.1em; text-align:center;
+padding:2rem; z-index:200; flex-direction:column; gap:1rem; font-family:‘Orbitron’,monospace;
 }
-#error-msg button {
-background: var(–m); border:none; color:#000;
-padding:0.5rem 1.5rem; font-family:inherit;
-cursor:pointer; letter-spacing:0.15em;
-font-size:0.7rem; text-transform:uppercase;
-margin-top:0.5rem;
-}
+#error-msg button { background:var(–m); border:none; color:#000; padding:0.5rem 1.5rem; font-family:inherit; cursor:pointer; letter-spacing:0.15em; font-size:0.7rem; text-transform:uppercase; }
 </style>
 
 </head>
 <body>
 
-<!-- Rotate prompt -->
+<div id="rotate-msg"><div class="ri">📱</div><div>// 端末を横向きに //</div></div>
 
-<div id="rotate-msg">
-  <div class="rotate-icon">📱</div>
-  <div>// 端末を横向きに //</div>
-</div>
-
-<!-- Start Screen -->
+<!-- START -->
 
 <div id="start-screen">
-  <div class="start-grid"></div>
-  <div class="start-scanline"></div>
-  <div class="start-content">
-    <div class="logo-wrap">
-      <div class="logo">NEUROVISION
-        <span class="glitch">NEUROVISION</span>
-        <span class="glitch2">NEUROVISION</span>
-      </div>
-      <div class="logo-sub">// AR-VR TACTICAL INTERFACE v2.4.9 //</div>
+  <div class="sg"></div><div class="ssl"></div>
+  <div class="sc">
+    <div>
+      <div class="logo">NEUROVISION<span class="g1">NEUROVISION</span><span class="g2">NEUROVISION</span></div>
+      <div class="logo-sub">// AR-VR TACTICAL INTERFACE v3.0 //</div>
     </div>
-    <div class="sys-info">
-      SYS &nbsp;<span>ONLINE</span> &nbsp;|&nbsp; NET &nbsp;<span>LINKED</span> &nbsp;|&nbsp; AI &nbsp;<span>READY</span><br>
-      OPTIC &nbsp;<span>DUAL-EYE</span> &nbsp;|&nbsp; FOV &nbsp;<span>0.5x WIDE</span><br>
-      STATUS &nbsp;<span>OPERATIONAL</span>
+    <div class="sysinfo">
+      SYS <span>ONLINE</span> | NET <span>LINKED</span> | AI <span>READY</span><br>
+      AR <span>DEPTH+VISION</span> | FOV <span>0.5x WIDE</span><br>
+      MODE <span>ALWAYS-ON FULL AR</span>
     </div>
     <button id="start-btn" onclick="startVR()">▸ BOOT SYSTEM</button>
-    <div class="boot-log" id="boot-log">
-      > INITIALIZING OPTICAL ARRAY...<br>
-      > LOADING AR SUBSYSTEMS...<br>
-      > CALIBRATING STEREOSCOPIC LENSES...<br>
-      > AI CORE: STANDING BY...
-    </div>
   </div>
 </div>
 
-<!-- Error -->
+<div id="error-msg"><div id="error-text">// CAMERA ACCESS DENIED //</div><button onclick="location.reload()">RETRY</button></div>
 
-<div id="error-msg">
-  <div id="error-text">// CAMERA ACCESS DENIED //</div>
-  <button onclick="location.reload()">RETRY</button>
-</div>
-
-<!-- VR View -->
+<!-- VR -->
 
 <div id="vr-container">
+  <!-- Left eye: video + depth canvas -->
   <div id="left-eye" class="eye">
     <video id="video-left" autoplay playsinline muted></video>
+    <canvas class="depth-canvas" id="depth-left"></canvas>
   </div>
+  <!-- Right eye: video + depth canvas -->
   <div id="right-eye" class="eye">
     <video id="video-right" autoplay playsinline muted></video>
+    <canvas class="depth-canvas" id="depth-right"></canvas>
   </div>
   <div id="divider"></div>
 
-  <!-- AR Canvas -->
+  <!-- AR label canvas (fixed over everything) -->
 
 <canvas id="ar-canvas"></canvas>
 
-  <!-- HUD Layer (duplicated per eye implicitly by positioning) -->
+  <!-- HUD -->
 
   <div class="hud-layer">
-    <!-- scanlines + vignette on full screen -->
     <div class="scanlines"></div>
     <div class="vignette"></div>
-    <div class="scan-sweep"></div>
-
-```
-<!-- Left eye elements -->
-<div class="xhair left"><div class="xhair-inner"></div></div>
-<div class="bracket tl" style="left:8px"></div>
-<div class="bracket tr" style="left:calc(50% - 30px)"></div>
-<div class="bracket bl" style="left:8px"></div>
-<div class="bracket br" style="left:calc(50% - 30px)"></div>
-
-<!-- Right eye elements -->
-<div class="xhair right"><div class="xhair-inner"></div></div>
-<div class="bracket tl" style="left:calc(50% + 8px)"></div>
-<div class="bracket tr" style="right:8px"></div>
-<div class="bracket bl" style="left:calc(50% + 8px)"></div>
-<div class="bracket br" style="right:8px"></div>
-
-<!-- Status panels – LEFT -->
-<div class="panel tl" id="panel-tl">
-  <div><span class="label">MODE &nbsp;</span><span class="val">AR-VR</span></div>
-  <div><span class="label">EYE &nbsp;&nbsp;</span><span class="val">LEFT</span></div>
-  <div><span class="label">ZOOM &nbsp;</span><span class="val">0.5x</span></div>
-  <div><span class="label">FPS &nbsp;&nbsp;</span><span class="val" id="fps-l">--</span></div>
-</div>
-<div class="panel bl">
-  <div><span class="label">LAT &nbsp;</span><span class="val" id="lat">--</span></div>
-  <div><span class="label">LNG &nbsp;</span><span class="val" id="lng">--</span></div>
-  <div><span class="label">ALT &nbsp;</span><span class="val" id="alt">--</span></div>
-  <div><span class="label">HDG &nbsp;</span><span class="val" id="hdg">--</span></div>
-</div>
-
-<!-- Status panels – RIGHT -->
-<div class="panel tr">
-  <div><span class="val">RIGHT</span><span class="label"> &nbsp;EYE</span></div>
-  <div><span class="val" id="time-disp">--:--:--</span></div>
-  <div><span class="val" id="date-disp">----/--/--</span></div>
-  <div><span class="alert" id="alert-txt">■ SCANNING</span></div>
-</div>
-<div class="panel br">
-  <div><span class="val" id="obj-count">0</span><span class="label"> &nbsp;TARGETS</span></div>
-  <div><span class="val" id="threat">LOW</span><span class="label"> &nbsp;THREAT</span></div>
-  <div><span class="val" id="signal">████</span><span class="label"> &nbsp;SIG</span></div>
-</div>
-
-<!-- Centre banner -->
-<div class="centre-banner">// NEUROVISION AR //</div>
-
-<!-- Eye labels -->
-<div class="eye-label l">L-EYE</div>
-<div class="eye-label r">R-EYE</div>
-
-<!-- Radar -->
-<div class="radar-wrap">
-  <div class="radar"><div class="radar-cross"></div></div>
-  <div class="radar-label">RADAR</div>
-</div>
-```
-
-  </div>
-
-  <!-- AI Panel -->
-
-  <div id="ai-panel">
-    <div id="ai-status"><div class="ai-dot"></div><span>AI VISION CORE // READY</span></div>
-    <div id="ai-text">視界をスキャン中... ボタンで解析</div>
-    <button id="analyze-btn" onclick="analyzeScene()">▸ ANALYZE SCENE</button>
+    <div class="sweep"></div>
+    <!-- L crosshair + brackets -->
+    <div class="xhair l"><div class="xi"></div></div>
+    <div class="br tl" style="left:8px"></div>
+    <div class="br tr" style="left:calc(50% - 30px)"></div>
+    <div class="br bl" style="left:8px"></div>
+    <div class="br br2" style="left:calc(50% - 30px)"></div>
+    <!-- R crosshair + brackets -->
+    <div class="xhair r"><div class="xi"></div></div>
+    <div class="br tl" style="left:calc(50% + 8px)"></div>
+    <div class="br tr" style="right:8px"></div>
+    <div class="br bl" style="left:calc(50% + 8px)"></div>
+    <div class="br br2" style="right:8px"></div>
+    <!-- Panels -->
+    <div class="panel ptl">
+      <div><span class="lbl">MODE </span><span class="val">AR-VR</span></div>
+      <div><span class="lbl">EYE &nbsp;</span><span class="val">LEFT</span></div>
+      <div><span class="lbl">ZOOM </span><span class="val">0.5x</span></div>
+      <div><span class="lbl">FPS &nbsp;</span><span class="val" id="fps-l">--</span></div>
+    </div>
+    <div class="panel ptr">
+      <div><span class="val">RIGHT</span><span class="lbl"> EYE</span></div>
+      <div><span class="val" id="time-disp">--:--:--</span></div>
+      <div><span class="val" id="date-disp">----/--/--</span></div>
+      <div><span class="alrt" id="alert-txt">■ SCANNING</span></div>
+    </div>
+    <div class="panel pbl">
+      <div><span class="lbl">LAT </span><span class="val" id="lat">--</span></div>
+      <div><span class="lbl">LNG </span><span class="val" id="lng">--</span></div>
+      <div><span class="lbl">ALT </span><span class="val" id="alt">--</span></div>
+      <div><span class="lbl">HDG </span><span class="val" id="hdg">--</span></div>
+    </div>
+    <div class="panel pbr">
+      <div><span class="val" id="obj-count">0</span><span class="lbl"> TARGETS</span></div>
+      <div><span class="val" id="threat">LOW</span><span class="lbl"> THREAT</span></div>
+      <div><span class="val" id="signal">████</span><span class="lbl"> SIG</span></div>
+    </div>
+    <div class="cbanner">// NEUROVISION AR //</div>
+    <!-- Radar -->
+    <div class="radar-wrap">
+      <div class="radar"><div class="rc"></div></div>
+      <div class="rlbl">RADAR</div>
+    </div>
   </div>
 </div>
 
-<!-- Controls -->
+<!-- Depth legend -->
+
+<div id="depth-legend">
+  <div class="dl-lbl">NEAR</div>
+  <div class="dl-bar"></div>
+  <div class="dl-lbl">FAR</div>
+</div>
+
+<!-- AI panel -->
+
+<div id="ai-panel">
+  <div id="ai-status"><div class="ai-dot"></div><span>AI VISION CORE // READY</span></div>
+  <div id="ai-text">視界をスキャン中... 解析ボタンで起動</div>
+  <button id="analyze-btn" onclick="analyzeScene()">▸ ANALYZE SCENE</button>
+</div>
 
 <div id="controls">
-  <div class="ctrl-group">
-    <div class="ctrl-label">IPD</div>
-    <input type="range" id="ipd" min="-60" max="60" value="0" oninput="adjustIPD(this.value)">
-  </div>
+  <div class="cg"><div class="clbl">IPD</div><input type="range" id="ipd" min="-60" max="60" value="0" oninput="adjustIPD(this.value)"></div>
 </div>
-
 <button id="exit-btn" onclick="exitVR()">✕ EXIT</button>
 
 <script>
-let stream = null;
-let animId = null;
-let frameCount = 0, lastFpsTime = 0;
+let stream = null, animId = null;
+let frameCount = 0, lastFpsTime = 0, arTime = 0;
 let isAnalyzing = false;
-let canvas, ctx;
+let arCanvas, arCtx;
+let depthWorkerL = null, depthWorkerR = null;
+// AI label results
+let aiLabels = []; // [{x,y,w,h,label,conf}] in 0-1 coords relative to half-width
 
-// ── AR CANVAS drawing ──
-function initCanvas() {
-  canvas = document.getElementById('ar-canvas');
-  ctx = canvas.getContext('2d');
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  drawAR();
+// ── DEPTH: edge-based pseudo depth map ──
+function renderDepth(video, canvas) {
+  if (!video || video.readyState < 2) return;
+  const w = canvas.width, h = canvas.height;
+  if (w === 0 || h === 0) return;
+  const ctx = canvas.getContext('2d');
+  // Draw video frame
+  ctx.drawImage(video, 0, 0, w, h);
+  const frame = ctx.getImageData(0, 0, w, h);
+  const d = frame.data;
+  const out = ctx.createImageData(w, h);
+  const o = out.data;
+
+  // Edge detection (Sobel) → use as "sharpness = near" heuristic
+  // Also use luminance gradient as depth cue
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = (y * w + x) * 4;
+      const lum = (r,g,b) => 0.299*r + 0.587*g + 0.114*b;
+      const L  = lum(d[i],d[i+1],d[i+2]);
+      const Lx1 = lum(d[(y*w+x-1)*4],d[(y*w+x-1)*4+1],d[(y*w+x-1)*4+2]);
+      const Lx2 = lum(d[(y*w+x+1)*4],d[(y*w+x+1)*4+1],d[(y*w+x+1)*4+2]);
+      const Ly1 = lum(d[((y-1)*w+x)*4],d[((y-1)*w+x)*4+1],d[((y-1)*w+x)*4+2]);
+      const Ly2 = lum(d[((y+1)*w+x)*4],d[((y+1)*w+x)*4+1],d[((y+1)*w+x)*4+2]);
+      const gx = Lx2 - Lx1, gy = Ly2 - Ly1;
+      const edge = Math.min(255, Math.sqrt(gx*gx + gy*gy) * 2.5);
+      // Combine: center bias (things in center tend to be subject = near) + edge strength
+      const cx = x / w - 0.5, cy = y / h - 0.5;
+      const centerBias = Math.max(0, 1 - Math.sqrt(cx*cx + cy*cy) * 2.5) * 80;
+      const depth = Math.min(255, edge + centerBias); // 0=far 255=near
+
+      // Map depth → heatmap color: blue(far) → green → yellow → red(near)
+      let r2, g2, b2;
+      const t = depth / 255;
+      if (t < 0.25) {
+        const s = t / 0.25;
+        r2 = 0; g2 = Math.round(s*200); b2 = Math.round(180 + s*75);
+      } else if (t < 0.5) {
+        const s = (t-0.25)/0.25;
+        r2 = 0; g2 = Math.round(200+s*55); b2 = Math.round(255-s*255);
+      } else if (t < 0.75) {
+        const s = (t-0.5)/0.25;
+        r2 = Math.round(s*255); g2 = 255; b2 = 0;
+      } else {
+        const s = (t-0.75)/0.25;
+        r2 = 255; g2 = Math.round(255-s*200); b2 = 0;
+      }
+      o[i]   = r2;
+      o[i+1] = g2;
+      o[i+2] = b2;
+      o[i+3] = Math.round(t * 160 + 20); // alpha: near=opaque, far=transparent
+    }
+  }
+  ctx.putImageData(out, 0, 0);
 }
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// ── AR CANVAS: HUD boxes + AI labels ──
+function initARCanvas() {
+  arCanvas = document.getElementById('ar-canvas');
+  arCtx = arCanvas.getContext('2d');
+  resizeARCanvas();
+  window.addEventListener('resize', resizeARCanvas);
+}
+function resizeARCanvas() {
+  arCanvas.width = window.innerWidth;
+  arCanvas.height = window.innerHeight;
+  // Also resize depth canvases
+  ['depth-left','depth-right'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const parent = el.parentElement;
+    el.width = parent.offsetWidth;
+    el.height = parent.offsetHeight;
+  });
 }
 
-let arTime = 0;
-const blips = Array.from({length:6}, () => ({
-  x: Math.random(), y: Math.random(),
-  age: Math.random() * 100,
-  life: 60 + Math.random() * 120
-}));
-
-function drawAR() {
-  animId = requestAnimationFrame(drawAR);
+function drawARFrame() {
+  animId = requestAnimationFrame(drawARFrame);
   arTime++;
   frameCount++;
 
@@ -698,212 +398,194 @@ function drawAR() {
     frameCount = 0; lastFpsTime = now;
   }
 
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
+  // Depth maps (every 2 frames to save CPU)
+  if (arTime % 2 === 0) {
+    renderDepth(document.getElementById('video-left'),  document.getElementById('depth-left'));
+    renderDepth(document.getElementById('video-right'), document.getElementById('depth-right'));
+  }
 
+  const W = arCanvas.width, H = arCanvas.height;
+  arCtx.clearRect(0, 0, W, H);
   const halfW = W / 2;
 
-  // Draw for both eyes
-  [0, halfW].forEach((ox, eyeIdx) => {
+  [0, halfW].forEach((ox) => {
     const eW = halfW;
 
     // Horizontal data lines
     for (let i = 0; i < 3; i++) {
       const y = H * (0.2 + i * 0.3) + Math.sin(arTime * 0.02 + i) * 4;
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(0,255,231,${0.06 + Math.sin(arTime*0.03+i)*0.02})`;
-      ctx.lineWidth = 1;
-      ctx.moveTo(ox + 40, y);
-      ctx.lineTo(ox + eW - 40, y);
-      ctx.stroke();
+      arCtx.beginPath();
+      arCtx.strokeStyle = `rgba(0,255,231,${0.05 + Math.sin(arTime*0.03+i)*0.02})`;
+      arCtx.lineWidth = 1;
+      arCtx.moveTo(ox + 40, y); arCtx.lineTo(ox + eW - 40, y);
+      arCtx.stroke();
     }
 
-    // Floating scan boxes (simulated object detection)
-    const boxes = [
-      { x:0.15, y:0.2, w:0.2, h:0.35, label:'OBJECT_A', conf:94 },
-      { x:0.6,  y:0.3, w:0.25, h:0.4, label:'OBJECT_B', conf:87 },
-    ];
-    boxes.forEach((b, bi) => {
-      const bx = ox + b.x * eW;
-      const by = b.y * H + Math.sin(arTime * 0.015 + bi) * 3;
-      const bw = b.w * eW;
-      const bh = b.h * H;
-      const pulse = 0.5 + Math.sin(arTime * 0.05 + bi) * 0.3;
+    // AI label boxes
+    aiLabels.forEach((lb, li) => {
+      const bx = ox + lb.x * eW;
+      const by = lb.y * H;
+      const bw = lb.w * eW;
+      const bh = lb.h * H;
+      const pulse = 0.55 + Math.sin(arTime * 0.04 + li) * 0.25;
 
-      // Box
-      ctx.strokeStyle = `rgba(0,255,231,${pulse * 0.6})`;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([6, 4]);
-      ctx.strokeRect(bx, by, bw, bh);
-      ctx.setLineDash([]);
+      // Dashed box
+      arCtx.strokeStyle = `rgba(0,255,231,${pulse * 0.7})`;
+      arCtx.lineWidth = 1;
+      arCtx.setLineDash([5, 4]);
+      arCtx.strokeRect(bx, by, bw, bh);
+      arCtx.setLineDash([]);
 
       // Corner accents
       const cs = 10;
-      ctx.strokeStyle = `rgba(0,255,231,${pulse})`;
-      ctx.lineWidth = 2;
-      [[bx,by],[bx+bw,by],[bx,by+bh],[bx+bw,by+bh]].forEach(([cx,cy],ci) => {
-        const sx = ci%2===0?1:-1, sy = ci<2?1:-1;
-        ctx.beginPath(); ctx.moveTo(cx,cy+sy*cs); ctx.lineTo(cx,cy); ctx.lineTo(cx+sx*cs,cy); ctx.stroke();
+      arCtx.strokeStyle = `rgba(0,255,231,${pulse})`;
+      arCtx.lineWidth = 2;
+      [[bx,by],[bx+bw,by],[bx,by+bh],[bx+bw,by+bh]].forEach(([cx2,cy2],ci) => {
+        const sx = ci%2===0?1:-1, sy=ci<2?1:-1;
+        arCtx.beginPath(); arCtx.moveTo(cx2,cy2+sy*cs); arCtx.lineTo(cx2,cy2); arCtx.lineTo(cx2+sx*cs,cy2); arCtx.stroke();
       });
 
-      // Label
-      ctx.fillStyle = `rgba(0,255,231,${pulse * 0.9})`;
-      ctx.font = '9px "Share Tech Mono"';
-      ctx.fillText(`${b.label} [${b.conf}%]`, bx + 4, by - 4);
-    });
+      // Tag background
+      const tag = `${lb.label} [${lb.conf}%]`;
+      arCtx.font = '10px "Share Tech Mono"';
+      const tw = arCtx.measureText(tag).width;
+      arCtx.fillStyle = `rgba(0,0,0,${pulse * 0.7})`;
+      arCtx.fillRect(bx, by - 16, tw + 8, 14);
+      arCtx.fillStyle = `rgba(0,255,231,${pulse})`;
+      arCtx.fillText(tag, bx + 4, by - 5);
 
-    // Blip dots on radar area
-    blips.forEach(blip => {
-      blip.age++;
-      if (blip.age > blip.life) {
-        blip.x = Math.random(); blip.y = Math.random();
-        blip.age = 0; blip.life = 60 + Math.random() * 120;
+      // Depth label bottom-right of box
+      if (lb.depth) {
+        arCtx.font = '9px "Share Tech Mono"';
+        arCtx.fillStyle = `rgba(245,230,66,${pulse * 0.8})`;
+        arCtx.fillText(`DST:${lb.depth}`, bx + bw - 50, by + bh + 11);
       }
-      const fade = 1 - blip.age / blip.life;
-      const bx2 = ox + blip.x * eW;
-      const by2 = blip.y * H;
-      ctx.beginPath();
-      ctx.arc(bx2, by2, 2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(57,255,20,${fade * 0.5})`;
-      ctx.fill();
     });
 
-    // Waveform strip (bottom)
-    ctx.beginPath();
-    ctx.strokeStyle = `rgba(0,255,231,0.2)`;
-    ctx.lineWidth = 1;
+    // Waveform
+    arCtx.beginPath();
+    arCtx.strokeStyle = `rgba(0,255,231,0.18)`;
+    arCtx.lineWidth = 1;
     for (let x = 0; x < eW; x += 2) {
-      const y2 = H - 60 + Math.sin((x + arTime * 2) * 0.05) * 8
-               + Math.sin((x + arTime) * 0.1) * 4;
-      x === 0 ? ctx.moveTo(ox + x, y2) : ctx.lineTo(ox + x, y2);
+      const y2 = H - 55 + Math.sin((x + arTime*2)*0.05)*7 + Math.sin((x + arTime)*0.1)*3;
+      x===0 ? arCtx.moveTo(ox+x, y2) : arCtx.lineTo(ox+x, y2);
     }
-    ctx.stroke();
+    arCtx.stroke();
   });
 
-  // Update live data
   if (arTime % 60 === 0) updateLiveData();
 }
 
 function updateLiveData() {
   const now = new Date();
-  document.getElementById('time-disp').textContent =
-    now.toTimeString().slice(0,8);
-  document.getElementById('date-disp').textContent =
-    now.toISOString().slice(0,10);
-
-  const sigs = ['████','███░','██░░','█░░░'];
+  document.getElementById('time-disp').textContent = now.toTimeString().slice(0,8);
+  document.getElementById('date-disp').textContent = now.toISOString().slice(0,10);
+  const sigs = ['████','███░'];
   document.getElementById('signal').textContent = sigs[Math.floor(Math.random()*2)];
-  document.getElementById('obj-count').textContent = 2 + Math.floor(Math.random()*3);
-
-  const threats = ['LOW','LOW','MEDIUM'];
-  document.getElementById('threat').textContent = threats[Math.floor(Math.random()*3)];
-
-  const alerts = ['■ SCANNING','▶ TRACKING','◆ LOCKED'];
-  document.getElementById('alert-txt').textContent = alerts[Math.floor(arTime/60)%alerts.length];
+  document.getElementById('obj-count').textContent = aiLabels.length || Math.floor(Math.random()*3)+1;
+  const thr = ['LOW','LOW','MEDIUM'];
+  document.getElementById('threat').textContent = thr[Math.floor(Math.random()*3)];
+  const al = ['■ SCANNING','▶ TRACKING','◆ LOCKED'];
+  document.getElementById('alert-txt').textContent = al[Math.floor(arTime/60)%al.length];
 }
 
-// ── Geolocation ──
-function startGeo() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.watchPosition(pos => {
-    document.getElementById('lat').textContent = pos.coords.latitude.toFixed(4);
-    document.getElementById('lng').textContent = pos.coords.longitude.toFixed(4);
-    document.getElementById('alt').textContent = pos.coords.altitude ? pos.coords.altitude.toFixed(0)+'m' : '--';
-  }, ()=>{}, { enableHighAccuracy: true });
-}
-
-// ── Device orientation (heading) ──
-function startOrientation() {
-  window.addEventListener('deviceorientationabsolute', e => {
-    if (e.alpha !== null)
-      document.getElementById('hdg').textContent = Math.round(e.alpha) + '°';
-  });
-}
-
-// ── AI Scene Analysis ──
+// ── AI SCENE ANALYSIS ──
 async function analyzeScene() {
   if (isAnalyzing) return;
   isAnalyzing = true;
-
   const btn = document.getElementById('analyze-btn');
   const aiText = document.getElementById('ai-text');
-  const aiStatus = document.getElementById('ai-status').querySelector('span');
-
-  btn.textContent = '▸ ANALYZING...';
-  btn.disabled = true;
-  aiStatus.textContent = 'AI VISION CORE // PROCESSING';
+  const aiSt = document.getElementById('ai-status').querySelector('span');
+  btn.textContent = '▸ ANALYZING...'; btn.disabled = true;
+  aiSt.textContent = 'AI VISION CORE // PROCESSING';
   aiText.textContent = '> キャプチャ中...';
 
-  // Capture frame from video
+  // Capture from left video
   const video = document.getElementById('video-left');
   const cap = document.createElement('canvas');
   cap.width = 320; cap.height = 180;
-  const capCtx = cap.getContext('2d');
-  capCtx.drawImage(video, 0, 0, 320, 180);
-  const imageData = cap.toDataURL('image/jpeg', 0.7).split(',')[1];
-
-  aiText.textContent = '> AIに送信中...';
+  cap.getContext('2d').drawImage(video, 0, 0, 320, 180);
+  const imageData = cap.toDataURL('image/jpeg', 0.75).split(',')[1];
+  aiText.textContent = '> AI解析中...';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        system: 'あなたはサイバーパンクARシステムのAIです。カメラ映像を解析して、見えているものを簡潔に20〜40文字で報告してください。語尾は「を検出」「を確認」「スキャン完了」など軍用・SF風に。余計な前置きなし。',
-        messages: [{
-          role: 'user',
-          content: [{
-            type: 'image',
-            source: { type: 'base64', media_type: 'image/jpeg', data: imageData }
-          }, {
-            type: 'text',
-            text: 'この視界を解析してください。'
-          }]
-        }]
+        system: `あなたはサイバーパンクARシステムの物体認識AIです。
+カメラ映像に写っている主要な物体を最大4つ検出し、必ずJSON形式のみで返してください。
+形式:
+{"summary":"20文字以内のSF風概要","objects":[{"label":"物体名(英語大文字)","conf":信頼度0-99,"x":0-1,"y":0-1,"w":0-1,"h":0-1,"depth":"NEAR/MID/FAR"}]}
+xywh は画像全体を1とした相対座標。summaryの語尾は「検出」「確認」「スキャン完了」など。JSONのみ、他の文字なし。`,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:imageData}},
+          {type:'text',text:'この視界を解析してください。'}
+        ]}]
       })
     });
-
     const data = await res.json();
-    const text = data.content?.find(b => b.type === 'text')?.text || '解析失敗';
-    aiText.textContent = '> ' + text;
-    aiStatus.textContent = 'AI VISION CORE // COMPLETE';
-
+    const raw = data.content?.find(b=>b.type==='text')?.text || '{}';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    if (parsed.objects) {
+      aiLabels = parsed.objects.map(o => ({
+        label: o.label || 'OBJECT',
+        conf: o.conf || 0,
+        x: Math.max(0.02, Math.min(0.75, o.x || 0.1)),
+        y: Math.max(0.05, Math.min(0.6,  o.y || 0.2)),
+        w: Math.max(0.08, Math.min(0.4,  o.w || 0.2)),
+        h: Math.max(0.1,  Math.min(0.6,  o.h || 0.3)),
+        depth: o.depth || 'MID'
+      }));
+      document.getElementById('obj-count').textContent = aiLabels.length;
+    }
+    aiText.textContent = '> ' + (parsed.summary || '解析完了');
+    aiSt.textContent = 'AI VISION CORE // COMPLETE';
   } catch(e) {
-    aiText.textContent = '> NETWORK ERROR // RETRY';
-    aiStatus.textContent = 'AI VISION CORE // OFFLINE';
+    aiText.textContent = '> PARSE ERROR // ' + e.message.slice(0,30);
+    aiSt.textContent = 'AI VISION CORE // ERROR';
   }
-
-  btn.textContent = '▸ ANALYZE SCENE';
-  btn.disabled = false;
+  btn.textContent = '▸ ANALYZE SCENE'; btn.disabled = false;
   isAnalyzing = false;
 }
 
-// ── Start VR ──
+// ── GEO ──
+function startGeo() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.watchPosition(p => {
+    document.getElementById('lat').textContent = p.coords.latitude.toFixed(4);
+    document.getElementById('lng').textContent = p.coords.longitude.toFixed(4);
+    document.getElementById('alt').textContent = p.coords.altitude ? p.coords.altitude.toFixed(0)+'m' : '--';
+  }, ()=>{}, {enableHighAccuracy:true});
+}
+function startOrientation() {
+  window.addEventListener('deviceorientationabsolute', e => {
+    if (e.alpha !== null) document.getElementById('hdg').textContent = Math.round(e.alpha)+'°';
+  });
+}
+
+// ── START VR ──
 async function startVR() {
   try {
     try { await screen.orientation.lock('landscape'); } catch(e) {}
-
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+      video: { facingMode:'environment', width:{ideal:1920}, height:{ideal:1080} },
       audio: false
     });
-
-    // Try wide-angle zoom
     const track = stream.getVideoTracks()[0];
     if (track) {
       const caps = track.getCapabilities ? track.getCapabilities() : {};
       if (caps.zoom) {
         const z = Math.max(caps.zoom.min, Math.min(0.5, caps.zoom.max));
-        try { await track.applyConstraints({ advanced: [{ zoom: z }] }); } catch(e) {}
+        try { await track.applyConstraints({advanced:[{zoom:z}]}); } catch(e) {}
       }
     }
-
     const vL = document.getElementById('video-left');
     const vR = document.getElementById('video-right');
-    vL.srcObject = stream;
-    vR.srcObject = stream;
+    vL.srcObject = stream; vR.srcObject = stream;
     await Promise.all([vL.play(), vR.play()]);
 
     document.getElementById('start-screen').style.display = 'none';
@@ -911,20 +593,21 @@ async function startVR() {
     document.getElementById('controls').style.display = 'flex';
     document.getElementById('exit-btn').style.display = 'block';
     document.getElementById('ai-panel').style.display = 'flex';
+    document.getElementById('depth-legend').style.display = 'flex';
 
-    initCanvas();
+    initARCanvas();
     updateLiveData();
     startGeo();
     startOrientation();
+    drawARFrame();
 
     try { await document.documentElement.requestFullscreen(); } catch(e) {}
-
   } catch(err) {
-    const errText = document.getElementById('error-text');
-    if (err.name === 'NotAllowedError') errText.textContent = '// CAMERA ACCESS DENIED //';
-    else if (err.name === 'NotFoundError') errText.textContent = '// NO CAMERA FOUND //';
-    else errText.textContent = '// ERROR: ' + err.message + ' //';
-    document.getElementById('error-msg').style.display = 'flex';
+    const et = document.getElementById('error-text');
+    if (err.name==='NotAllowedError') et.textContent='// CAMERA ACCESS DENIED //';
+    else if (err.name==='NotFoundError') et.textContent='// NO CAMERA FOUND //';
+    else et.textContent='// ERROR: '+err.message+' //';
+    document.getElementById('error-msg').style.display='flex';
   }
 }
 
@@ -936,17 +619,18 @@ function adjustIPD(val) {
 
 function exitVR() {
   if (animId) cancelAnimationFrame(animId);
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; }
   try { screen.orientation.unlock(); } catch(e) {}
   if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen();
-  document.getElementById('vr-container').style.display = 'none';
-  document.getElementById('controls').style.display = 'none';
+  ['vr-container','controls','ai-panel','depth-legend'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
   document.getElementById('exit-btn').style.display = 'none';
-  document.getElementById('ai-panel').style.display = 'none';
   document.getElementById('start-screen').style.display = 'flex';
+  aiLabels = [];
 }
 
-document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+document.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 </script>
 
 </body>
